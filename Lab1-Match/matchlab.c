@@ -3,6 +3,14 @@
     uid: u0936913
 */
 #include<stdio.h>
+#include<string.h>
+
+void matchSequence(char **argv,int argc,int a, int b, int c, int t);
+void matchA(char **argv, int argCount, int t);
+void matchB(char **argv, int argCount, int t);
+void matchC(char **argv, int argCount, int t);
+char*  alphabetCount(char *argument,short lowerBound,short upperBound, char testChar);
+char* oddUppercase(char *argument);
 
 int main( int argc, char **argv)
 {
@@ -42,12 +50,21 @@ int main( int argc, char **argv)
 	    case 't':
 	      t=1;
 	      break;
+	  default:
+	    printf("Invalid flag.Run the program again.!\n");
+	    return 1;
 	  } // end of switch statement
 	  argc--;
 	} // end of while loop
 
+      if(!(a && b && c))
+	{
+	  // not passd any flags. Default is -a
+	  a = 1;
+	}
+
       // Do we assume that atleast one argument is given.!
-      matchSequence(argv,argc,int a,int b, int c);
+      matchSequence(argv,argc,a,b,c,t);
 
     }
 
@@ -61,31 +78,113 @@ void matchSequence(char **argv,int argCount,int a, int b, int c, int t)
 {
   if(a==1)
     {
-      matchA(argv,t);
-
+      matchA(argv,argCount,t);
     }
   else if(b==1)
     {
-      matchB(argv,t);
+      matchB(argv,argCount,t);
     }
   else if(c==1)
     {
-      matchC(argv,t);
+      matchC(argv,argCount,t);
     }
 
 }
 
-void matchA(char **argv, int t)
+void matchA(char **argv, int argCount, int t)
 {
-  
+  int i;
+  int countK = 0;
+  int countX = 0;
+
+  // Creating a pointer array to store the answers.
+  char *answers[argCount];
+
+  for(i=0; i<argCount; i++)
+    {
+      char *argument = argv[i];
+      int index = 0;
+      char compareAlphabet;
+      
+      // Checking the first condition
+      while(*argument=='k')
+	{
+	  countK++;
+	  argument++;
+	}
+
+      // Checking the second condition
+      argument = alphabetCount(argument,4,5,'x');
+      
+      if(argument!=NULL)
+	{
+	  // Check the third condition
+	  argument = oddUppercase(argument);
+	}
+      else
+	{
+	  answers[i] = "no";
+	}
+    }
 }
 
-void matchB(char **argv, int t)
+// Returns a string, pointing to the latest index.
+char*  alphabetCount(char *argument,short lowerBound,short upperBound, char testChar)
 {
+
+  int countTestChar = 0;
+
+  while(*argument == testChar)
+    {
+      countTestChar++;
+      argument++;
+    }
   
+  if(countTestChar>=lowerBound && countTestChar<=upperBound)
+    return argument;
+  return NULL;
 }
 
-void matchC(char **argv, int t)
+char* oddUppercase(char *argument)
 {
+  int uppercaseCount = 0;
+
+  while(*argument>=65 && *argument<=90)
+    {
+      uppercaseCount++;
+      argument++;
+    }
   
+  // Find out upperCount to be an odd number.
+  uppercaseCount = uppercaseCount << 7;
+  printf("THe count is:%d",uppercaseCount);
+
+  return argument;
+}
+
+
+
+
+
+
+
+void matchB(char **argv, int argCount, int t)
+{
+  int i;
+
+
+  for(i=0; i<argCount; i++)
+    {
+      
+    }
+}
+
+void matchC(char **argv, int argCount, int t)
+{
+  int i;
+
+  for( i=0; i<argCount; i++)
+    {
+
+    }
 }
