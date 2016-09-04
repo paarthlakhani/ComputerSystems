@@ -9,11 +9,12 @@ void matchSequence(char **argv,int argc,int a, int b, int c, int t);
 void matchA(char **argv, int argCount, int t);
 void matchB(char **argv, int argCount, int t);
 void matchC(char **argv, int argCount, int t);
-char*  alphabetCount(char *argument,short lowerBound,short upperBound, char testChar);
+char* alphabetCount(char *argument,short lowerBound,short upperBound, char testChar);
 char* oddUppercase(char *argument);
 char* decimalCount(char*argument, short lowerBound,short upperBound,char *X);
 char* oddRepetitions(char*argument,char testChar);
 char* checkXForB(char*argument,char *X);
+int checkXForC(char*argument,char *X);
 
 int main( int argc, char **argv)
 {
@@ -207,44 +208,38 @@ void matchB(char **argv, int argCount, int t)
 			  //printf("argument is:%s",argument);
 			  
 			  if(strlen(argument)>0)
-			    printf("no\n");
-			  else if(t==0)
 			    {
-			      printf("yes\n");
+			      if(t == 0)
+				printf("no\n");
 			    }
+			  else if(t==0)
+			      printf("yes\n");
 			  else
 			    {
+			      printf("Transformation needs to be done here");
 			      // t = 1 and strlen(argument)==0
 			      // Do the transformation here.
 			    }
 			}
 		      else
-			{
-			  printf("\n");
-			}
+			if(t==0)
+			  printf("no\n");
 		    }
 		  else
-		    {
+		    if(t == 0)
 		      printf("no\n");
-		    }
-
 		}
 	      else
-		{
+		if(t == 0)
 		  printf("no\n");
-		}
 	    }
 	  else
-	    {
+	    if(t == 0)
 	      printf("no\n");
-	    }
-	  
 	}
       else
-	{
+	if(t == 0)
 	  printf("no\n");
-	}
-
     }
 }
 
@@ -280,28 +275,35 @@ void matchC(char **argv, int argCount, int t)
 		  if(argument!=NULL)
 		    {
 		      // Checking the fifth condition
-		      printf("The argument is: %s",argument);
-		      printf("I have to check the fifth condition");
+		      //printf("The argument is: %s\n",argument);
+		      //printf("Sequence X is: %c\n",*X);
+		      //printf("Sequence X is: %s\n",X);
+		      //printf("I have to check the fifth condition");
+		      int equal = checkXForC(argument,X);
+		      if(equal == 0)
+			{
+			  if(t == 0)
+			    printf("yes\n");
+			  else
+			    {
+			      printf("Transformation needs to be done");
+			    }
+			}
+		      else if(t == 0)
+			printf("no\n");
 		    }
-		  else
-		    {
-		      printf("no\n");
-		    }
+		  else if(t == 0)
+		    printf("no\n");
+		  
 		}
-	      else
-		{
-		  printf("no\n");
-		}
+	      else if(t == 0)
+		printf("no\n");
 	    }
-	  else
-	    {
-	      printf("no\n");
-	    }
+	  else if(t==0)
+	    printf("no\n");
 	}
-      else
-	{
-	  printf("no\n");
-	}
+      else if(t == 0)
+	printf("no\n");
     }
 }
 
@@ -333,7 +335,7 @@ char* oddUppercase(char *argument)
     }
   
   // Find out upperCount to be an odd number.
-  uppercaseCount = uppercaseCount &  1;
+  uppercaseCount = uppercaseCount & 1;
   
   if(uppercaseCount == 1)
     return argument;
@@ -364,7 +366,7 @@ char* decimalCount(char*argument, short lowerBound,short upperBound,char *X)
   return NULL;
 }
 
-// any odd number of reptitions of the letter 'v'
+// any odd number of reptitions of the letter testChar
 char* oddRepetitions(char*argument,char testChar)
 {
   int repetitionCount = 0;
@@ -374,7 +376,6 @@ char* oddRepetitions(char*argument,char testChar)
       repetitionCount++;
       argument++;
     }
-  
   // Check if the count is odd or even
   repetitionCount = repetitionCount & 1;
   //printf("The repetitions are:%d",repetitionCount);
@@ -411,4 +412,20 @@ char* checkXForB(char*argument,char *X)
 	  return NULL;
 	}
     }
+}
+
+int checkXForC(char *argument,char *X)
+{
+  //printf("The length argument is: %d\n",strlen(argument));
+  //printf("The string argument is: %s\n",argument);
+  char *testX[strlen(X)*3];
+  memset(testX,'\0',sizeof(testX));
+  strcat(testX,X);
+  strcat(testX,X);
+  strcat(testX,X);
+  //printf("The length is: %d\n",strlen(testX));
+  //printf("The string is: %s\n",testX);
+
+  //printf("The arguments are equal: %d",strcmp(argument,testX));
+  return strcmp(argument,testX);
 }
