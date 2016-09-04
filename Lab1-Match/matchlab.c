@@ -193,19 +193,35 @@ void matchB(char **argv, int argCount, int t)
 		      // Checking the fifth condition
 		      int j = 0;
 		      
-		      printf("X is:%s\n",X);
+		      /*printf("X is:%s\n",X);
 		      
 		      while(j<strlen(X))
 			{
 			  printf("Xs is:%c\n",X[j]);
 			  j++;
-			}
+			  }*/
 
 		      argument = checkXForB(argument,X);
-
-		      // Do the transformations here.
-
-
+		      if(argument!=NULL)
+			{
+			  //printf("argument is:%s",argument);
+			  
+			  if(strlen(argument)>0)
+			    printf("no\n");
+			  else if(t==0)
+			    {
+			      printf("yes\n");
+			    }
+			  else
+			    {
+			      // t = 1 and strlen(argument)==0
+			      // Do the transformation here.
+			    }
+			}
+		      else
+			{
+			  printf("\n");
+			}
 		    }
 		  else
 		    {
@@ -367,13 +383,32 @@ char* oddRepetitions(char*argument,char testChar)
   return NULL;
 }
 
+// You can improve this function.
 char* checkXForB(char*argument,char *X)
 {
   //printf("The argument is: %s\n",argument);
   //  printf("X is: %s",X);
-
-  while(strlen(X)>0)
+  if(strlen(X)==1 || strlen(X)==2)
     {
-      printf("X is: %c\n",*X++);
+      if(*X == *argument) // Checking only 0 position
+	{
+	  argument++;
+	  return argument;
+	}
+	  return NULL;
+    }
+  else // length is 3
+    {
+      if(*X == *argument)
+	{
+	  X+=2;
+	  argument++;
+	  if(*X == *argument)
+	    {
+	      argument++;
+	      return argument;
+	    }
+	  return NULL;
+	}
     }
 }
