@@ -103,6 +103,7 @@ void matchA(char **argv, int argCount, int t)
   for(i=0; i<argCount; i++)
     {
       char *argument = argv[i];
+
       int index = 0;
       char compareAlphabet;
       
@@ -120,10 +121,30 @@ void matchA(char **argv, int argCount, int t)
 	{
 	  // Check the third condition
 	  argument = oddUppercase(argument);
+	  
+	  if(argument!=NULL && strlen(argument) == 0)
+	    {
+	      //	      answers[i] = "yes";
+	      // Do the conversion here.
+	      if(t==1)
+		{
+		  printf("conversion needs to be done here.");
+		}
+	      else
+		printf("yes\n");
+	    }
+	  else
+	    {
+	      if(t==0)
+		printf("no\n");
+	      //	      answers[i] = "no";
+	    }
 	}
       else
 	{
-	  answers[i] = "no";
+	  if(t==0)
+	    printf("no\n");
+	  //	  answers[i] = "no";
 	}
     }
 }
@@ -156,16 +177,12 @@ char* oddUppercase(char *argument)
     }
   
   // Find out upperCount to be an odd number.
-  uppercaseCount = uppercaseCount << 7;
-  printf("THe count is:%d",uppercaseCount);
-
-  return argument;
+  uppercaseCount = uppercaseCount &  1;
+  
+  if(uppercaseCount == 1)
+    return argument;
+  return NULL;
 }
-
-
-
-
-
 
 
 void matchB(char **argv, int argCount, int t)
