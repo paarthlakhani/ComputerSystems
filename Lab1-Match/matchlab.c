@@ -103,6 +103,12 @@ void matchA(char **argv, int argCount, int t)
   for(i=0; i<argCount; i++)
     {
       char *argument = argv[i];
+      
+      // Storing this for later transformation.
+      char firstAl = *argument;
+      char *transformedData[strlen(argument)];
+      memset(transformedData,'\0',sizeof(transformedData));
+      strcpy(transformedData, argument);
 
       int index = 0;
       char compareAlphabet;
@@ -124,11 +130,12 @@ void matchA(char **argv, int argCount, int t)
 	  
 	  if(argument!=NULL && strlen(argument) == 0)
 	    {
-	      //	      answers[i] = "yes";
+	      //answers[i] = "yes";
 	      // Do the conversion here.
 	      if(t==1)
 		{
-		  printf("conversion needs to be done here.");
+		  memset(transformedData,firstAl,strlen(transformedData));
+		  printf("%s\n",transformedData);
 		}
 	      else
 		printf("yes\n");
@@ -137,7 +144,6 @@ void matchA(char **argv, int argCount, int t)
 	    {
 	      if(t==0)
 		printf("no\n");
-	      //	      answers[i] = "no";
 	    }
 	}
       else
