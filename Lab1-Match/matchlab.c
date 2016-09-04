@@ -11,6 +11,9 @@ void matchB(char **argv, int argCount, int t);
 void matchC(char **argv, int argCount, int t);
 char*  alphabetCount(char *argument,short lowerBound,short upperBound, char testChar);
 char* oddUppercase(char *argument);
+char* decimalCount(char*argument, short lowerBound,short upperBound,char *X);
+char* oddRepetitions(char*argument,char testChar);
+char* checkXForB(char*argument,char *X);
 
 int main( int argc, char **argv)
 {
@@ -57,7 +60,8 @@ int main( int argc, char **argv)
 	  argc--;
 	} // end of while loop
 
-      if(!(a && b && c))
+      //if(!(a && b && c))
+      if(a!=1 && b!=1 && c!=1)
 	{
 	  // not passd any flags. Default is -a
 	  a = 1;
@@ -94,8 +98,6 @@ void matchSequence(char **argv,int argCount,int a, int b, int c, int t)
 void matchA(char **argv, int argCount, int t)
 {
   int i;
-  int countK = 0;
-  int countX = 0;
 
   // Creating a pointer array to store the answers.
   char *answers[argCount];
@@ -116,7 +118,6 @@ void matchA(char **argv, int argCount, int t)
       // Checking the first condition
       while(*argument=='k')
 	{
-	  countK++;
 	  argument++;
 	}
 
@@ -155,7 +156,140 @@ void matchA(char **argv, int argCount, int t)
     }
 }
 
-// Returns a string, pointing to the latest index.
+
+
+
+void matchB(char **argv, int argCount, int t)
+{
+  int i;
+
+  for(i=0; i<argCount; i++)
+    {
+      char *argument = argv[i];
+      
+      // Checking the first condition
+      argument = alphabetCount(argument,1,2,'g');
+      
+      if(argument!=NULL)
+	{
+	  // Checking the second condition
+	  char *X[3];
+	  memset(X,'\0',sizeof(X));
+	  argument = decimalCount(argument,1,3,X);
+
+	  if(argument!=NULL)
+	    {
+	      // Checking the third condition
+	      argument = oddRepetitions(argument,'v');
+	      //printf("The argument is:%s",argument);
+	      if(argument!=NULL)
+		{
+		  // Checking the forth condition
+		  argument = oddUppercase(argument);
+
+		  if(argument!=NULL)
+		    {
+		      //printf("The argument is: %s",argument);
+		      // Checking the fifth condition
+		      int j = 0;
+		      
+		      printf("X is:%s\n",X);
+		      
+		      while(j<strlen(X))
+			{
+			  printf("Xs is:%c\n",X[j]);
+			  j++;
+			}
+
+		      argument = checkXForB(argument,X);
+
+		      // Do the transformations here.
+
+
+		    }
+		  else
+		    {
+		      printf("no\n");
+		    }
+
+		}
+	      else
+		{
+		  printf("no\n");
+		}
+	    }
+	  else
+	    {
+	      printf("no\n");
+	    }
+	  
+	}
+      else
+	{
+	  printf("no\n");
+	}
+
+    }
+}
+
+void matchC(char **argv, int argCount, int t)
+{
+  int i;
+  
+  for( i=0; i<argCount; i++)
+    {
+      char *argument = argv[i];
+      
+      // Checking the first condition
+      argument = oddRepetitions(argument,'f');
+
+      if(argument!=NULL)
+	{	  
+	  //printf("The argument is:%s",argument);
+	  // Checking the second condition
+	  char *X[3];
+	  memset(X,'\0',sizeof(X));
+	  argument = decimalCount(argument,1,3,X);
+	  
+	  if(argument!=NULL)
+	    {
+	      // checking the third condition
+	      argument = alphabetCount(argument,1,2,'t');
+	      
+	      if(argument!=NULL)
+		{
+		  // Checking the forth condition
+		  argument = oddUppercase(argument);
+
+		  if(argument!=NULL)
+		    {
+		      // Checking the fifth condition
+		      printf("The argument is: %s",argument);
+		      printf("I have to check the fifth condition");
+		    }
+		  else
+		    {
+		      printf("no\n");
+		    }
+		}
+	      else
+		{
+		  printf("no\n");
+		}
+	    }
+	  else
+	    {
+	      printf("no\n");
+	    }
+	}
+      else
+	{
+	  printf("no\n");
+	}
+    }
+}
+
+// Returns a strings pointing to the latest index.
 char*  alphabetCount(char *argument,short lowerBound,short upperBound, char testChar)
 {
 
@@ -190,24 +324,56 @@ char* oddUppercase(char *argument)
   return NULL;
 }
 
-
-void matchB(char **argv, int argCount, int t)
+// between lowerBound and upperBound (inclusive) decimal digits - call this sequence X.
+char* decimalCount(char*argument, short lowerBound,short upperBound,char *X)
 {
-  int i;
-
-
-  for(i=0; i<argCount; i++)
+  int decimalCount = 0;
+  char* XSequence[3];
+  
+  memset(XSequence,'\0',sizeof(XSequence));
+  memcpy(XSequence,argument,3);
+  
+  while(*argument>=48 && *argument<=57)
     {
-      
+      decimalCount++;
+      argument++;
     }
+  
+  if(decimalCount >= lowerBound && decimalCount <= upperBound)
+    {
+      // Copy the sequence here.
+      memcpy(X,XSequence,decimalCount);
+      return argument;
+    }
+  return NULL;
 }
 
-void matchC(char **argv, int argCount, int t)
+// any odd number of reptitions of the letter 'v'
+char* oddRepetitions(char*argument,char testChar)
 {
-  int i;
-
-  for( i=0; i<argCount; i++)
+  int repetitionCount = 0;
+  
+  while(*argument == testChar)
     {
+      repetitionCount++;
+      argument++;
+    }
+  
+  // Check if the count is odd or even
+  repetitionCount = repetitionCount & 1;
+  //printf("The repetitions are:%d",repetitionCount);
+  if(repetitionCount == 1)
+    return argument;
+  return NULL;
+}
 
+char* checkXForB(char*argument,char *X)
+{
+  //printf("The argument is: %s\n",argument);
+  //  printf("X is: %s",X);
+
+  while(strlen(X)>0)
+    {
+      printf("X is: %c\n",*X++);
     }
 }
