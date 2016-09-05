@@ -278,7 +278,8 @@ void matchC(char **argv, int argCount, int t)
   for( i=0; i<argCount; i++)
     {
       char *argument = argv[i];
-      
+      char *transformedString = argv[i]; // This would be the transformed string.
+
       // Checking the first condition
       argument = oddRepetitions(argument,'f');
 
@@ -310,8 +311,23 @@ void matchC(char **argv, int argCount, int t)
 			    printf("yes\n");
 			  else
 			    {
-			      printf("Transformation needs to be done");
-			      
+			      //printf("Transformation needs to be done");
+			      //printf("Transformed String is: %s",transformedString);
+			      // Transformed String; finalTransform and finalTransformInitial
+
+			      char *finalTransform = malloc(sizeof(transformedString));
+			      char *finalTransformInitial = finalTransform;
+
+			      while(*transformedString!='\0')
+				{
+				  if(*transformedString!='G')
+				    {
+				      memset(finalTransform,*transformedString,1);
+				      finalTransform++;
+				    }
+				  transformedString++;
+				}
+			      printf("The string is: %s",finalTransformInitial);
 			    }
 			}
 		      else if(t == 0)
