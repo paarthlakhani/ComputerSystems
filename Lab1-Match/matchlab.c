@@ -100,16 +100,14 @@ void matchA(char **argv, int argCount, int t)
 {
   int i;
 
-  // Creating a pointer array to store the answers.
-  char *answers[argCount];
-
   for(i=0; i<argCount; i++)
     {
       char *argument = argv[i];
-      
+
       // Storing this for later transformation.
       char firstAl = *argument;
-      char *transformedData[strlen(argument)];
+      int length = strlen(argument);
+      char transformedData[length];
       memset(transformedData,'\0',sizeof(transformedData));
       strcpy(transformedData, argument);
 
@@ -167,6 +165,9 @@ void matchB(char **argv, int argCount, int t)
   for(i=0; i<argCount; i++)
     {
       char *argument = argv[i];
+      char transformedString[strlen(argument)];
+      memset(transformedString,'\0',sizeof(transformedString));
+      strcpy(transformedString, argument);
       
       // Checking the first condition
       argument = alphabetCount(argument,1,2,'g');
@@ -174,7 +175,7 @@ void matchB(char **argv, int argCount, int t)
       if(argument!=NULL)
 	{
 	  // Checking the second condition
-	  char *X[3];
+	  char X[3];
 	  memset(X,'\0',sizeof(X));
 	  argument = decimalCount(argument,1,3,X);
 
@@ -202,6 +203,7 @@ void matchB(char **argv, int argCount, int t)
 			  j++;
 			  }*/
 
+
 		      argument = checkXForB(argument,X);
 		      if(argument!=NULL)
 			{
@@ -216,9 +218,35 @@ void matchB(char **argv, int argCount, int t)
 			      printf("yes\n");
 			  else
 			    {
-			      printf("Transformation needs to be done here");
 			      // t = 1 and strlen(argument)==0
 			      // Do the transformation here.
+			      char *previous = transformedString;
+			      char *current = transformedString;
+			      char *finalTransform = malloc(sizeof(current)*2);
+			      char *finalTransformInitial = finalTransform;
+
+			      //printf("Currrent String is:%s\n",current);
+			      //printf("Previous String is:%s\n",previous);
+
+			      while(*previous!='\0')
+				{
+				  current++;
+				  memset(finalTransform,*previous,1);
+				  finalTransform++;
+				  if(*current == 'G')
+				    {
+				      memset(finalTransform,'E',1);
+				      finalTransform++;
+				    }
+
+				  //printf("Current String is:%c\n",*current);
+				  //printf("Previous String is:%c\n",*previous);
+				  previous++;
+				}
+			      
+			      printf("%s\n",finalTransformInitial);
+			      //char test = 'g';
+			      //printf("The length is: %d",*transformedString);
 			    }
 			}
 		      else
@@ -258,7 +286,7 @@ void matchC(char **argv, int argCount, int t)
 	{	  
 	  //printf("The argument is:%s",argument);
 	  // Checking the second condition
-	  char *X[3];
+	  char X[3];
 	  memset(X,'\0',sizeof(X));
 	  argument = decimalCount(argument,1,3,X);
 	  
@@ -275,10 +303,6 @@ void matchC(char **argv, int argCount, int t)
 		  if(argument!=NULL)
 		    {
 		      // Checking the fifth condition
-		      //printf("The argument is: %s\n",argument);
-		      //printf("Sequence X is: %c\n",*X);
-		      //printf("Sequence X is: %s\n",X);
-		      //printf("I have to check the fifth condition");
 		      int equal = checkXForC(argument,X);
 		      if(equal == 0)
 			{
@@ -287,6 +311,7 @@ void matchC(char **argv, int argCount, int t)
 			  else
 			    {
 			      printf("Transformation needs to be done");
+			      
 			    }
 			}
 		      else if(t == 0)
@@ -418,7 +443,7 @@ int checkXForC(char *argument,char *X)
 {
   //printf("The length argument is: %d\n",strlen(argument));
   //printf("The string argument is: %s\n",argument);
-  char *testX[strlen(X)*3];
+  char testX[strlen(X)*3];
   memset(testX,'\0',sizeof(testX));
   strcat(testX,X);
   strcat(testX,X);
