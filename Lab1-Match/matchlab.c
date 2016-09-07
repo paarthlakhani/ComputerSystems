@@ -1,6 +1,19 @@
 /*
     Author: Paarth Lakhani
     uid: u0936913
+
+    Purpose:
+    The purpose of the assignment is to match a sequence with a given set of conditions based on the tag provided.
+    The tag might be -a, -b, or -c. Every tag has a different set of conditions.
+    If a -t is provided, then the matching sequence needs to undergo the transformation according to the provided.
+
+    Compile the program:
+    gcc -O2 -o matchlab matchlab.c
+
+    Run the Program
+    ./matchlab kxxxxE
+    ./matchlab bbbbbbbxxxxEHDF
+    ./matchlab -t -b g523vvvvvvvvvHEB53
 */
 #include<stdio.h>
 #include<string.h>
@@ -16,6 +29,9 @@ char* oddRepetitions(char*argument,char testChar);
 char* checkXForB(char*argument,char *X);
 int checkXForC(char*argument,char *X);
 
+/*
+  Main function that sets the flags.
+ */
 int main( int argc, char **argv)
 {
   
@@ -32,9 +48,6 @@ int main( int argc, char **argv)
     }
   else
     {
-      // We now need to use the flags and take the arguments passing that.
-      
-      //while( argc > 1 && argv[0][0]=='-')
       argc--;
 
       while( (++argv)[0][0] == '-')
@@ -61,7 +74,6 @@ int main( int argc, char **argv)
 	  argc--;
 	} // end of while loop
 
-      //if(!(a && b && c))
       if(a!=1 && b!=1 && c!=1)
 	{
 	  // not passd any flags. Default is -a
@@ -70,31 +82,46 @@ int main( int argc, char **argv)
 
       // Do we assume that atleast one argument is given.!
       matchSequence(argv,argc,a,b,c,t);
-
-    }
-
-  
+    }  
 
   return 0;
 }
 
-
+/*
+  Depending on the flag set, it calls the appropriate function for checking the matching conditions.
+ */
 void matchSequence(char **argv,int argCount,int a, int b, int c, int t)
 {
-  if(a==1)
+  if( a==1 )
     {
       matchA(argv,argCount,t);
     }
-  else if(b==1)
+  else if( b==1 )
     {
       matchB(argv,argCount,t);
     }
-  else if(c==1)
+  else if( c==1 )
     {
       matchC(argv,argCount,t);
     }
-
 }
+
+/*
+  argv is a list of arguments given.
+  For every argument in the argv array, it checks the validity of all the conditions of mode a.
+  For mode a, we have,
+
+  Match a sequence of (with nothing else before or after)
+
+    any number (including zero) repetitions of the letter “k”;
+    between 4 and 5 repetitions (inclusive) of the letter “x”; and
+    an odd number of uppercase letters.
+
+For matches, perform the following conversion:
+
+    replace each character by the first one.
+
+ */
 
 void matchA(char **argv, int argCount, int t)
 {
@@ -108,14 +135,14 @@ void matchA(char **argv, int argCount, int t)
       char firstAl = *argument;
       int length = strlen(argument);
       char transformedData[length];
-      memset(transformedData,'\0',sizeof(transformedData));
+      memset(transformedData, '\0', sizeof(transformedData));
       strcpy(transformedData, argument);
 
       int index = 0;
       char compareAlphabet;
       
       // Checking the first condition
-      while(*argument=='k')
+      while(*argument == 'k')
 	{
 	  argument++;
 	}
@@ -123,16 +150,15 @@ void matchA(char **argv, int argCount, int t)
       // Checking the second condition
       argument = alphabetCount(argument,4,5,'x');
       
-      if(argument!=NULL)
+      if(argument!= NULL)
 	{
 	  // Check the third condition
 	  argument = oddUppercase(argument);
 	  
-	  if(argument!=NULL && strlen(argument) == 0)
+	  if(argument!= NULL && strlen(argument) == 0)
 	    {
-	      //answers[i] = "yes";
 	      // Do the conversion here.
-	      if(t==1)
+	      if(t == 1)
 		{
 		  memset(transformedData,firstAl,strlen(transformedData));
 		  printf("%s\n",transformedData);
@@ -142,22 +168,36 @@ void matchA(char **argv, int argCount, int t)
 	    }
 	  else
 	    {
-	      if(t==0)
+	      if(t == 0)
 		printf("no\n");
 	    }
 	}
       else
 	{
-	  if(t==0)
+	  if(t == 0)
 	    printf("no\n");
-	  //	  answers[i] = "no";
 	}
     }
 }
 
+/*
+  argv is a list of arguments given.
+  For every argument in the argv array, it checks the validity of all the conditions of mode b.
+  For mode b, we have,
 
+  Match a sequence of (with nothing else before or after)
 
+    between 1 and 2 repetitions (inclusive) of the letter “g”;
+    between 1 and 3 (inclusive) decimal digits — call this sequence X;
+    any odd number of repetitions of the letter “v”;
+    an odd number of uppercase letters; and
+    the same characters as the even-positioned characters in X.
 
+For matches, perform the following conversion:
+
+    add one “E” before each “G”.
+
+ */
 void matchB(char **argv, int argCount, int t)
 {
   int i;
@@ -171,7 +211,7 @@ void matchB(char **argv, int argCount, int t)
       
       // Checking the first condition
       argument = alphabetCount(argument,1,2,'g');
-      
+
       if(argument!=NULL)
 	{
 	  // Checking the second condition
@@ -183,7 +223,6 @@ void matchB(char **argv, int argCount, int t)
 	    {
 	      // Checking the third condition
 	      argument = oddRepetitions(argument,'v');
-	      //printf("The argument is:%s",argument);
 	      if(argument!=NULL)
 		{
 		  // Checking the forth condition
@@ -191,30 +230,19 @@ void matchB(char **argv, int argCount, int t)
 
 		  if(argument!=NULL)
 		    {
-		      //printf("The argument is: %s",argument);
 		      // Checking the fifth condition
 		      int j = 0;
-		      
-		      /*printf("X is:%s\n",X);
-		      
-		      while(j<strlen(X))
-			{
-			  printf("Xs is:%c\n",X[j]);
-			  j++;
-			  }*/
-
 
 		      argument = checkXForB(argument,X);
+
 		      if(argument!=NULL)
-			{
-			  //printf("argument is:%s",argument);
-			  
+			{ 
 			  if(strlen(argument)>0)
 			    {
 			      if(t == 0)
 				printf("no\n");
 			    }
-			  else if(t==0)
+			  else if(t == 0)
 			      printf("yes\n");
 			  else
 			    {
@@ -224,9 +252,6 @@ void matchB(char **argv, int argCount, int t)
 			      char *current = transformedString;
 			      char *finalTransform = malloc(sizeof(current)*2);
 			      char *finalTransformInitial = finalTransform;
-
-			      //printf("Currrent String is:%s\n",current);
-			      //printf("Previous String is:%s\n",previous);
 
 			      while(*previous!='\0')
 				{
@@ -239,38 +264,55 @@ void matchB(char **argv, int argCount, int t)
 				      finalTransform++;
 				    }
 
-				  //printf("Current String is:%c\n",*current);
-				  //printf("Previous String is:%c\n",*previous);
 				  previous++;
 				}
 			      
 			      printf("%s\n",finalTransformInitial);
-			      //char test = 'g';
-			      //printf("The length is: %d",*transformedString);
 			    }
 			}
 		      else
-			if(t==0)
+			if(t == 0)
 			  printf("no\n");
 		    }
 		  else
 		    if(t == 0)
 		      printf("no\n");
-		}
+		} 
 	      else
 		if(t == 0)
 		  printf("no\n");
-	    }
+	    } // end of second condition
 	  else
 	    if(t == 0)
 	      printf("no\n");
-	}
+	} // end of first condition
       else
+	{
 	if(t == 0)
 	  printf("no\n");
-    }
-}
+	}
+    } // End of for loop
+} // End of function
 
+
+/*
+  argv is a list of arguments given.
+  For every argument in the argv array, it checks the validity of all the conditions of mode c.
+  For mode c, we have,
+
+  Match a sequence of (with nothing else before or after)
+
+    any odd number of repetitions of the letter “f”;
+    between 1 and 3 (inclusive) decimal digits — call this sequence X;
+    between 1 and 2 repetitions (inclusive) of the letter “t”;
+    an odd number of uppercase letters; and
+    the same characters as X repeated 3 times.
+
+For matches, perform the following conversion:
+
+    remove every “G”.
+
+ */
 void matchC(char **argv, int argCount, int t)
 {
   int i;
@@ -285,7 +327,6 @@ void matchC(char **argv, int argCount, int t)
 
       if(argument!=NULL)
 	{	  
-	  //printf("The argument is:%s",argument);
 	  // Checking the second condition
 	  char X[3];
 	  memset(X,'\0',sizeof(X));
@@ -327,7 +368,7 @@ void matchC(char **argv, int argCount, int t)
 				    }
 				  transformedString++;
 				}
-			      printf("The string is: %s",finalTransformInitial);
+			      printf("%s\n",finalTransformInitial);
 			    }
 			}
 		      else if(t == 0)
@@ -344,8 +385,8 @@ void matchC(char **argv, int argCount, int t)
 	    printf("no\n");
 	}
       else if(t == 0)
-	printf("no\n");
-    }
+	printf("no\n"); 
+    } 
 }
 
 // Returns a strings pointing to the latest index.
@@ -419,7 +460,6 @@ char* oddRepetitions(char*argument,char testChar)
     }
   // Check if the count is odd or even
   repetitionCount = repetitionCount & 1;
-  //printf("The repetitions are:%d",repetitionCount);
   if(repetitionCount == 1)
     return argument;
   return NULL;
@@ -428,8 +468,7 @@ char* oddRepetitions(char*argument,char testChar)
 // You can improve this function.
 char* checkXForB(char*argument,char *X)
 {
-  //printf("The argument is: %s\n",argument);
-  //  printf("X is: %s",X);
+
   if(strlen(X)==1 || strlen(X)==2)
     {
       if(*X == *argument) // Checking only 0 position
@@ -452,21 +491,16 @@ char* checkXForB(char*argument,char *X)
 	    }
 	  return NULL;
 	}
+      return NULL;
     }
 }
 
 int checkXForC(char *argument,char *X)
 {
-  //printf("The length argument is: %d\n",strlen(argument));
-  //printf("The string argument is: %s\n",argument);
-  char testX[strlen(X)*3];
+  char testX[(strlen(X)<<1)+strlen(X)];
   memset(testX,'\0',sizeof(testX));
   strcat(testX,X);
   strcat(testX,X);
   strcat(testX,X);
-  //printf("The length is: %d\n",strlen(testX));
-  //printf("The string is: %s\n",testX);
-
-  //printf("The arguments are equal: %d",strcmp(argument,testX));
   return strcmp(argument,testX);
 }
