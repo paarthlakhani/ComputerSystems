@@ -34,13 +34,12 @@ int checkXForC(char*argument,char *X);
  */
 int main( int argc, char **argv)
 {
-  
   int a = 0; // mode a
   int b = 0; // mode b
   int c = 0; // mode c
   int t = 0; // tansformation t
   char flag;
-  
+
   if(argc == 1)
     {
       printf("There are no arguments provided. ");
@@ -80,9 +79,8 @@ int main( int argc, char **argv)
 	  a = 1;
 	}
 
-      // Do we assume that atleast one argument is given.!
       matchSequence(argv,argc,a,b,c,t);
-    }  
+    }
 
   return 0;
 }
@@ -92,6 +90,7 @@ int main( int argc, char **argv)
  */
 void matchSequence(char **argv,int argCount,int a, int b, int c, int t)
 {
+
   if( a==1 )
     {
       matchA(argv,argCount,t);
@@ -281,11 +280,11 @@ void matchB(char **argv, int argCount, int t)
 	      else
 		if(t == 0)
 		  printf("no\n");
-	    } // end of second condition
+	    }
 	  else
 	    if(t == 0)
 	      printf("no\n");
-	} // end of first condition
+	}
       else
 	{
 	if(t == 0)
@@ -389,7 +388,11 @@ void matchC(char **argv, int argCount, int t)
     } 
 }
 
-// Returns a strings pointing to the latest index.
+/*
+  Checks whether the lowerBounds<=(alphabetCount)<=upperBound.
+  if the above is true then returns a strings pointing to the latest index, else returns null
+ */
+
 char*  alphabetCount(char *argument,short lowerBound,short upperBound, char testChar)
 {
 
@@ -406,6 +409,9 @@ char*  alphabetCount(char *argument,short lowerBound,short upperBound, char test
   return NULL;
 }
 
+/*
+  Checks whether the sequence has contains an odd number of uppercase alphabets.
+ */
 char* oddUppercase(char *argument)
 {
   int uppercaseCount = 0;
@@ -424,7 +430,9 @@ char* oddUppercase(char *argument)
   return NULL;
 }
 
-// between lowerBound and upperBound (inclusive) decimal digits - call this sequence X.
+/*
+  Checks whether the sequence contains between lowerBound and upperBound (inclusive) decimal digits - call this sequence X.
+ */
 char* decimalCount(char*argument, short lowerBound,short upperBound,char *X)
 {
   int decimalCount = 0;
@@ -465,7 +473,9 @@ char* oddRepetitions(char*argument,char testChar)
   return NULL;
 }
 
-// You can improve this function.
+/*
+  For mode b, for the last condition we need to check is whether the sequence has the same characters as the even-positioned characters in X.
+ */
 char* checkXForB(char*argument,char *X)
 {
 
@@ -476,7 +486,7 @@ char* checkXForB(char*argument,char *X)
 	  argument++;
 	  return argument;
 	}
-	  return NULL;
+      return NULL;
     }
   else // length is 3
     {
@@ -495,6 +505,9 @@ char* checkXForB(char*argument,char *X)
     }
 }
 
+/*
+  For mode b, for the last condition, we need to check whether the sequence has same characters as X repeated 3 times.
+ */
 int checkXForC(char *argument,char *X)
 {
   char testX[(strlen(X)<<1)+strlen(X)];
