@@ -1,0 +1,2 @@
+#cat ./demo.c | grep int | wc -l
+/bin/cat demo.c | grep int | /usr/bin/wc -l

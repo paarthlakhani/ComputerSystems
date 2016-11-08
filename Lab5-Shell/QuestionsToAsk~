@@ -1,0 +1,80 @@
+Regarding the assignment:
+
+You will need to read "ast.h" to know how the whoosh parser represents programs.
+
+Compile a program:
+gcc -o whoosh whoosh.c csapp.c fail.c parse.c
+
+Step 1:
+Start by making a sequence of individual commands work, which involves adding fork
+
+whoosh script syntax:
+
+‹group› ::= ‹modifier›? ‹commands›	
+
+‹commands› ::= ‹command› 
+			|  ‹or-commands› 
+			|  ‹and-commands›
+
+‹or-commands› ::= ‹command›
+			  |  ‹command› || ‹or-commands›
+
+‹and-commands› ::= ‹command›
+				|  ‹command› | ‹and-commands›
+
+
+
+Start with this--
+Whoosh Script Syntax
+
+‹group› ::= ‹modifier›? ‹commands›	
+
+‹commands› ::= ‹command› 
+
+--> A ‹command› can optionally end in @ ‹variable›,
+command› ::= ‹executable› ‹argument›* ‹at-variable›?
+‹at-variable› ::= @ ‹variable›
+
+If a ‹command› ends with @ ‹variable›, then ‹variable› will be set to the command’s process ID.
+
+‹executable› ::=  ‹literal›
+‹argument› ::= ‹literal› |   ‹variable›
+‹literal› ::= sequence of characters a-z, A-Z, 0-9, ., :, _, -, =, and/or / and/or other characters between matching "s
+‹variable› ::= $ followed by a sequence of characters a-z, A-Z, and/or 0-9
+
+
+Finally, the ‹modifier› at the start of a ‹group› can indicate a number of repetitions, a ‹variable› that receives the exit status of a ‹command› in the ‹group›, or both:
+
+‹modifier› ::= repeat ‹n›
+			  |  ‹variable› =
+			  |  repeat ‹n› ‹variable› =
+
+A ‹group› that starts repeat ‹n› is the same as ‹n› lines that contain the ‹group› without the repeat ‹n› prefix.
+
+
+Whoosh Script Semantics.
+
+Each ‹command› in a whoosh program starts a process in the usual way. When a ‹group› contains multiple ‹command›s, the corresponding processes are all started at once.
+Except for ‹command›s in an ‹and-command›s, each process for a ‹command› inherits the input, output, and error file descriptors of the whoosh process.
+
+( Do this later when you are done with the above part)
+Each ‹group› in a whoosh program runs to completion before the next group is started. The definition of “completion” depends on the ‹group› form:
+
+
+
+A ‹command› completes when the single process for the ‹command› terminates, either by return/exit or by a signal.
+
+An ‹or-commands› completes when any one of the ‹command›s completes (in the same sense as a ‹command› by itself). As soon as one command completes, processes for non-yet-completed commands are terminated using SIGTERM. 
+
+Every ‹variable› used by a script is initialized to 0 when the script starts.
+
+
+Q.1: About the for loops
+Q.2: about changing the function declaration.
+
+
+
+
+
+
+
