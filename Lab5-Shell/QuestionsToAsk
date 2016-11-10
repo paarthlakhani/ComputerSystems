@@ -4,6 +4,7 @@ You will need to read "ast.h" to know how the whoosh parser represents programs.
 
 Compile a program:
 gcc -o whoosh whoosh.c csapp.c fail.c parse.c
+./whoosh scripts/basic/ls-l.whoosh
 
 Setting Standard File Descriptors:
 int dup2(int oldfd, int newfd);

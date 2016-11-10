@@ -1,0 +1,18 @@
+open all pipes
+
+if(fork == 0)
+{
+	if(first)
+		dup2
+	if middle
+		........
+	if last
+		.........
+	close all pipes but stdin and stdout
+	run_command	
+	 
+}
+else
+{
+	close all pipes
+}

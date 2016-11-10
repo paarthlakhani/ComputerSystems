@@ -1,0 +1,33 @@
+
+  int fdsA[2]; // process 1.
+  
+  pid_t pid;
+
+  Pipe(fdsA);
+  pid = Fork();
+  int argument_count = 2;
+
+  if( pid == 0)
+    {
+      const char **argv;
+      argv = malloc(sizeof(char *) * (argument_count+2));
+      argv[0] = "/bin/echo";
+      argv[1] = "-n";
+      argv[2] = "rumor";
+      argv[3] =  NULL;
+      Dup2(fdsA[1],1);
+      Close(fdsA[1]);
+      Execve("/bin/echo", (char * const *)argv, environ);
+    }
+  else
+    {
+      int arg_count = 3;
+      const char **argv_other;
+      argv_other = malloc(sizeof(char *) * (arg_count));
+      argv_other[0] = "/usr/bin/wc";
+      argv_other[1] = "-c";
+      argv_other[2] = NULL;
+      Dup2(fdsA[0],0);
+      Close(fdsA[1]);
+      Execve("/usr/bin/wc", (char * const *)argv_other, environ);
+    }
