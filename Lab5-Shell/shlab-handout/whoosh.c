@@ -176,9 +176,50 @@ static void run_group(script_group *group)
 	      else
 		{
 		  pids[i] = current_pid;
+		  
+		  if(command->pid_to!=NULL)
+		    {
+		      set_var( command->pid_to , pids[i] );
+		    }
 		}
 	    } // end of the for loop
 	  
+	  pid_t pid = 0;
+
+	      int child_status;
+	      
+	      // Which signum ? SIGTERM ? Why ?
+	      // What's the exam average.
+
+	      pid = Waitpid(-1,&child_status,0);
+	      int result = 0;
+	      
+	      if(WIFEXITED(child_status))
+		{
+		  result = WEXITSTATUS(child_status);
+		}
+	      else if(WIFSIGNALED(child_status))
+		{
+		  result = -1*WTERMSIG(child_status);
+		}
+	      
+	      if(variable!=NULL)
+		{
+		  set_var( variable , result);
+		}
+
+	  for( i = 0 ; i < num_commands ; i++)
+	    {
+	      if(pid!=0)
+		{
+		  if(pids[i]!=pid)
+		    {
+		      int status = 0;
+		      kill(pids[i],SIGTERM);
+		      Waitpid(pids[i],&status,0);
+		    }
+		}
+	    }
 	}
     }
 }
