@@ -29,20 +29,57 @@
 /* rounds up to the nearest multiple of mem_pagesize() */
 #define PAGE_ALIGN(size) (((size) + (mem_pagesize()-1)) & ~(mem_pagesize()-1))
 
+// Macro for block overhead
+#define OVERHEAD sizeof(block_header)
+
+// Macro for getting the header from a payload pointer
+// Gets the start of the block
+// bp - block payload
+#define HDRP(bp) ((char *)(bp) - sizeof(block_header))
+
+// Macros for working with a raw pointer as the header
+// Gets the size of block
+#define GET_SIZE(p) ((block_header *)(p))->size 
+
+// Is the block allocated or no ?
+#define GET_ALLOC(p) ((block_header *)(p))->allocated
+
+// Get the next block payload
+#define NEXT_BLOCKP(bp) ((char *)(bp) + GET_SIZE(HDRP(bp))) 
+
+// Defining the block header
+typedef struct
+{
+  size_t size;
+  char allocated; 
+}block_header;
+
 void *current_avail = NULL;
 int current_avail_size = 0;
 
-/* 
- * mm_init - initialize the malloc package.
- */
+void *first_block;
+
+ /*
 int mm_init(void)
 {
   current_avail = NULL;
   current_avail_size = 0;
   
   return 0;
-}
+}*/
 
+int mm_init(void)
+{
+   size_t size_page = mem_pagesize();
+   first_block = mem_map(size_page);
+  // sbrk(sizeof(block_header));
+  //first_block = sbrk(0);
+  
+   GET_SIZE(first_block)  = 0;
+   GET_ALLOC(first_block) = 1;
+
+  return 0;
+}
 
 /* 
  * mm_malloc - Allocate a block by using bytes from current_avail,

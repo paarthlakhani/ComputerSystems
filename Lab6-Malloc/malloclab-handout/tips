@@ -1,0 +1,18 @@
+Run the most basic script.
+./mdriver -f traces/short1-bal.rep
+
+
+
+gdb tips:
+
+0. Change the makefile so that you mention -g.
+    CC = gcc -g
+1. make
+2. gdb ./mdriver
+3. if you want to run the most basic test do:
+    i. r -f traces/short1-bal.rep
+4. Setting the breakpoint at line 76: b 76
+5. Continue: n
+6. go to next line: step
+7. See the variables: info variables
+8. See the local variables: info locals
