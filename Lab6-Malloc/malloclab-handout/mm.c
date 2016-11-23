@@ -31,8 +31,11 @@ void *first_block;
 /* rounds up to the nearest multiple of mem_pagesize() */
 #define PAGE_ALIGN(size) (((size) + (mem_pagesize()-1)) & ~(mem_pagesize()-1))
 
-// Macro for block overhead
-#define OVERHEAD (sizeof(block_header) + sizeof(block_footer))
+// Macro for block_header
+#define OVERHEAD_HEADER (sizeof(block_header))
+
+// Macro for block_footer
+#define OVERHEAD_FOOTER (sizeof(block_footer))
 
 // Macro for getting the header from a payload pointer
 // Gets the start of the block
@@ -43,15 +46,20 @@ void *first_block;
 // Gets the size of block
 #define GET_SIZE(p) ((block_header *)(p))->size
 
-// Gets the size of block from the block footer.
-#define GET_SIZE_FOOTER(p) ((block_footer *)(p))->size 
-
 // Is the block allocated or no ?
 #define GET_ALLOC(p) ((block_header *)(p))->allocated
 
 // Get the next block payload
 // Doubtful about this.
 #define NEXT_BLOCKP(bp) ((char *)(bp) + GET_SIZE(bp))
+
+// Macro for getting the previous header
+#define PREV_BLK(bp) ((char *)(bp) - GET_SIZE(bp) - OVERHEAD_HEADER)
+
+// Macro for getting to the next block
+#define FTRP(bp) ((char *)(bp) + GET_SIZE(bp) - OVERHEAD_HEADER)
+
+// Macro for incrementing 
 
 // Defining the block header
 typedef struct
@@ -60,10 +68,11 @@ typedef struct
   char allocated; 
 }block_header;
 
+// Defining the block footer
 typedef struct
 {
   size_t size;
-  int filler; // What is this used for ? 
+  int filler; 
 }block_footer;
 
 void *current_avail = NULL;
@@ -71,7 +80,6 @@ size_t current_avail_size = 0;
 
 // This is to clear the bytes
 size_t original_size = 0;
-
 
 int mm_init(void)
 {
@@ -82,7 +90,7 @@ int mm_init(void)
    void *epilogue_marking = first_block + current_avail_size;
 
    // We are subtracting the OVERHEAD because of the addition of epilogue
-   GET_SIZE(first_block)  = current_avail_size - OVERHEAD;
+   GET_SIZE(first_block)  = current_avail_size - OVERHEAD_HEADER;
    GET_ALLOC(first_block) = 0;
 
    GET_SIZE(epilogue_marking) = 0;
@@ -93,7 +101,7 @@ int mm_init(void)
 
 void *mm_malloc(size_t size)
 {
-  size_t new_size = ALIGN(size + OVERHEAD);
+  size_t new_size = ALIGN(size + OVERHEAD_HEADER + OVERHEAD_HEADER);
   void *latest_bp;
   void *current_block = first_block;
   
@@ -102,7 +110,7 @@ void *mm_malloc(size_t size)
       if(!GET_ALLOC(current_block) && GET_SIZE(current_block)>=new_size)
       {
         set_allocated(current_block, new_size);
-        current_block = current_block + OVERHEAD; 
+        current_block = current_block + OVERHEAD_HEADER ;
 	      return current_block;
       }
       current_block = NEXT_BLOCKP(current_block);
@@ -132,21 +140,34 @@ void set_allocated(void *bp, size_t size)
 {
   size_t extra_size = GET_SIZE(bp) - size;
  
-  if(extra_size > ALIGN(1 + OVERHEAD))
+  // Np symbol "block_footer" in current context
+  //if(extra_size > ALIGN(1 + OVERHEAD_HEADER + OVERHEAD_FOOTER))
+  if(extra_size > ALIGN(1 + OVERHEAD_HEADER + OVERHEAD_HEADER))
     {
       GET_SIZE(bp) = size;
+      GET_SIZE(FTRP(bp)) = size;
       GET_SIZE(NEXT_BLOCKP(bp)) = extra_size;
+      GET_SIZE(FTRP(NEXT_BLOCKP(bp))) = extra_size;
       GET_ALLOC(NEXT_BLOCKP(bp)) = 0;
     }
 
   GET_ALLOC(bp) = 1;
 }
 
+void *coalesce(void *bp)
+{
+  size_t prev_alloc = GET_ALLOC(PREV_BLK(bp));
+  size_t next_alloc = GET_ALLOC(NEXT_BLOCKP(bp));
+
+  return bp;
+}
 
 /*
  * mm_free - Freeing a block does nothing.
  */
 void mm_free(void *ptr)
 {
-  mem_unmap(HDRP(ptr),original_size);
+  //mem_unmap(HDRP(ptr),original_size);
+  GET_ALLOC(ptr) = 0;
+ // coalesce(bp);
 }
