@@ -169,5 +169,5 @@ void mm_free(void *ptr)
 {
   //mem_unmap(HDRP(ptr),original_size);
   GET_ALLOC(ptr) = 0;
- // coalesce(bp);
+  coalesce(ptr);
 }
